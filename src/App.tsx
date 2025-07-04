@@ -9,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/verify/data" element={<VerifyPage />} />
+        <Route path="/v" element={<VerifyPage />} />
         <Route
           path="*"
           element={<ErrorPage message="Página no encontrada" />}

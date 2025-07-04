@@ -1,13 +1,44 @@
 import { ReceiptData, CertificateData, DocumentData } from "@/types";
 
 /**
+ * Convierte el formato abreviado del QR al formato completo
+ */
+function expandQRData(data: any): any {
+  // Si ya está en formato completo, devolverlo tal como está
+  if (data.type && data.student && data.course) {
+    return data;
+  }
+
+  // Convertir formato abreviado a completo
+  return {
+    type: data.t === "r" ? "receipt" : data.t === "c" ? "certificate" : data.t,
+    id: data.i,
+    student: data.s,
+    course: data.c,
+    date: data.d,
+    amount: data.a,
+    courseType: data.ct === "c" ? "course" : data.ct,
+    studentId: data.si,
+    activityId: data.ai,
+    // Mantener cualquier campo adicional
+    ...Object.keys(data).reduce((acc, key) => {
+      if (!["t", "i", "s", "c", "d", "a", "ct", "si", "ai"].includes(key)) {
+        acc[key] = data[key];
+      }
+      return acc;
+    }, {} as any),
+  };
+}
+
+/**
  * Obtiene los parámetros de la URL y decodifica el payload
  */
 export function parseURLPayload(): DocumentData | null {
   try {
     // Obtener parámetros de la URL
     const urlParams = new URLSearchParams(window.location.search);
-    const payload = urlParams.get("payload");
+    // Buscar tanto 'payload' como 'p' para compatibilidad con URLs cortas
+    const payload = urlParams.get("payload") || urlParams.get("p");
 
     if (!payload) {
       throw new Error("No payload found in URL");
@@ -15,7 +46,10 @@ export function parseURLPayload(): DocumentData | null {
 
     // Decodificar base64
     const jsonData = atob(payload);
-    const data = JSON.parse(jsonData);
+    const rawData = JSON.parse(jsonData);
+
+    // Expandir datos abreviados si es necesario
+    const data = expandQRData(rawData);
 
     // Validar estructura básica
     if (!data.type || !data.id || !data.student || !data.course) {
