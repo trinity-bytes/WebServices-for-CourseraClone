@@ -190,5 +190,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 ---
 
-**Hecho con ❤️ para CourseraClone Academy**
+**Hecho con ❤️ para CourseraClone Academy**  
 Servicios para la app courseraclone
+
+<!-- GitHub Pages deployment enabled -->
