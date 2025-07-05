@@ -72,19 +72,43 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
               className="text-coursera-blue mt-1 flex-shrink-0"
               size={20}
             />
-            <div>
+            <div className="w-full">
               <p className="text-sm text-gray-600">Método de Pago</p>
               <p className="font-semibold text-gray-900">Tarjeta de Crédito</p>
+              <p className="text-xs text-gray-500">**** **** **** 1234</p>
+              <p className="text-xs text-gray-500">VISA - Aprobado</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Transaction Details */}
+        <div className="bg-gray-50 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+            Detalles de la Transacción
+          </h3>
+          <div className="space-y-1 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Subtotal:</span>
+              <span>{formatAmount(data.amount * 0.85)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">IGV (18%):</span>
+              <span>{formatAmount(data.amount * 0.15)}</span>
+            </div>
+            <div className="flex justify-between font-semibold text-gray-900 pt-1 border-t">
+              <span>Total:</span>
+              <span className="text-coursera-blue">
+                {formatAmount(data.amount)}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Amount */}
-        <div className="bg-gray-50 rounded-lg p-4 text-center mt-6">
-          <p className="text-sm text-gray-600 mb-1">Monto Total</p>
-          <p className="text-2xl font-bold text-coursera-blue">
-            {formatAmount(data.amount)}
-          </p>
+        <div className="bg-coursera-blue text-white rounded-lg p-4 text-center">
+          <p className="text-sm opacity-90 mb-1">Monto Pagado</p>
+          <p className="text-2xl font-bold">{formatAmount(data.amount)}</p>
+          <p className="text-xs opacity-75 mt-1">Procesado exitosamente</p>
         </div>
 
         {/* Footer */}

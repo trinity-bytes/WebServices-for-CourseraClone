@@ -1,7 +1,7 @@
 import { ReceiptData, CertificateData, DocumentData } from "@/types";
 
 /**
- * Convierte el formato abreviado del QR al formato completo
+ * Convierte el formato estándar del QR al formato completo de la aplicación
  */
 function expandQRData(data: any): any {
   // Si ya está en formato completo, devolverlo tal como está
@@ -9,7 +9,7 @@ function expandQRData(data: any): any {
     return data;
   }
 
-  // Convertir formato abreviado a completo
+  // Convertir formato estándar a formato completo
   return {
     type: data.t === "r" ? "receipt" : data.t === "c" ? "certificate" : data.t,
     id: data.i,
@@ -17,16 +17,12 @@ function expandQRData(data: any): any {
     course: data.c,
     date: data.d,
     amount: data.a,
-    courseType: data.ct === "c" ? "course" : data.ct,
-    studentId: data.si,
-    activityId: data.ai,
-    // Mantener cualquier campo adicional
-    ...Object.keys(data).reduce((acc, key) => {
-      if (!["t", "i", "s", "c", "d", "a", "ct", "si", "ai"].includes(key)) {
-        acc[key] = data[key];
-      }
-      return acc;
-    }, {} as any),
+    courseType:
+      data.ct === "c" ? "course" : data.ct === "e" ? "specialization" : data.ct,
+    // Información adicional que se agrega automáticamente
+    company: "CourseraClone Academy",
+    studentId: data.i, // Usar el id de boleta como studentId
+    activityId: data.i, // Usar el id de boleta como activityId
   };
 }
 
@@ -37,8 +33,9 @@ export function parseURLPayload(): DocumentData | null {
   try {
     // Obtener parámetros de la URL
     const urlParams = new URLSearchParams(window.location.search);
-    // Buscar tanto 'payload' como 'p' para compatibilidad con URLs cortas
-    const payload = urlParams.get("payload") || urlParams.get("p");
+    // Buscar parámetros: 'd' (nuevo estándar), 'payload' y 'p' (compatibilidad)
+    const payload =
+      urlParams.get("d") || urlParams.get("payload") || urlParams.get("p");
 
     if (!payload) {
       throw new Error("No payload found in URL");
@@ -48,7 +45,7 @@ export function parseURLPayload(): DocumentData | null {
     const jsonData = atob(payload);
     const rawData = JSON.parse(jsonData);
 
-    // Expandir datos abreviados si es necesario
+    // Expandir datos del formato estándar
     const data = expandQRData(rawData);
 
     // Validar estructura básica
