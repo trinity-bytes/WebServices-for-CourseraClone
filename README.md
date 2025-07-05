@@ -2,6 +2,8 @@
 
 Una aplicación web mobile-first para verificar comprobantes de pago y certificados del sistema CourseraClone mediante códigos QR.
 
+<!-- Última actualización: Julio 2025 - Arreglo de encoding UTF-8 -->
+
 ## 🚀 Demo
 
 **URL de producción:** https://trinity-bytes.github.io/WebServices-for-CourseraClone/
