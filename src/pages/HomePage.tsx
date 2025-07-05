@@ -2,11 +2,15 @@ import React from "react";
 import { QrCode, Shield, Download, Smartphone } from "lucide-react";
 
 export const HomePage: React.FC = () => {
-  // Payload con formato estándar definitivo y encoding UTF-8 correcto
+  // Payloads de ejemplo con encoding UTF-8 correcto
   const standardPayload =
     "eyJ0IjoiciIsImkiOjEyMzQ1LCJzIjoiTWFyw61hIEpvc8OpIEdhcmPDrWEgUm9kcsOtZ3VleiIsImMiOiJEZXNhcnJvbGxvIEZ1bGwgU3RhY2sgY29uIFJlYWN0IHkgTm9kZS5qcyIsImQiOiIyMDI0LTEyLTE1IiwiYSI6Mjk5Ljk5LCJjdCI6ImMifQ==";
-  const exampleURL = `/WebServices-for-CourseraClone/v?d=${standardPayload}`;
-  const exampleQRURL = `https://trinity-bytes.github.io/WebServices-for-CourseraClone/v?d=${standardPayload}`;
+
+  const certificatePayload =
+    "eyJ0IjoiYyIsImkiOjU0MzIxLCJzIjoiQW5hIE1hcsOtYSBSb2Ryw61ndWV6IFDDqXJleiIsImMiOiJEZXNhcnJvbGxvIEZ1bGwgU3RhY2sgY29uIFJlYWN0IHkgTm9kZS5qcyIsImNkIjoiMjAyNC0xMi0xMCIsImlkIjoiMjAyNC0xMi0xNSIsImciOiJFeGNlbGVudGUgKDk1JSkiLCJkdXIiOiI0MCBob3JhcyBhY2Fkw6ltaWNhcyIsImN0IjoiYyJ9";
+
+  const exampleReceiptURL = `/WebServices-for-CourseraClone/v?d=${standardPayload}`;
+  const exampleCertificateURL = `/WebServices-for-CourseraClone/v?d=${certificatePayload}`;
 
   return (
     <div className="min-h-screen bg-background">
@@ -112,32 +116,53 @@ export const HomePage: React.FC = () => {
             🧪 Prueba la Funcionalidad
           </h3>
           <p className="text-gray-700 mb-4">
-            Haz clic en el siguiente enlace para ver un comprobante de ejemplo
-            con formato estándar definitivo:
+            Haz clic en los siguientes enlaces para ver ejemplos de documentos:
           </p>
-          <div className="space-y-3">
-            <a
-              href={exampleURL}
-              className="btn-primary inline-flex items-center space-x-2"
-            >
-              <QrCode size={20} />
-              <span>Ver Comprobante Estándar</span>
-            </a>
-            <div className="text-sm text-gray-600">
-              <p>
-                <strong>URL del QR:</strong>{" "}
-                <code className="bg-gray-200 px-1 rounded text-xs break-all">
-                  {exampleQRURL}
-                </code>
-              </p>
-              <p className="mt-1">
-                ✅ Formato estándar definitivo con parámetro 'd'
-              </p>
-              <p>✅ Compatible con nombres completos (sin truncar)</p>
-              <p>✅ Empresa CourseraClone Academy automática</p>
-              <p>✅ Información de pago y fiscal simulada</p>
-              <p>✅ Soporte completo para caracteres especiales (ñ, tildes)</p>
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
+            {/* Comprobante */}
+            <div className="space-y-3">
+              <a
+                href={exampleReceiptURL}
+                className="btn-primary w-full inline-flex items-center justify-center space-x-2"
+              >
+                <QrCode size={20} />
+                <span>Ver Comprobante de Pago</span>
+              </a>
+              <div className="text-sm text-gray-600">
+                <p>📄 Comprobante de pago estándar</p>
+                <p>✅ Con tildes y caracteres especiales</p>
+                <p>💰 Incluye descarga PDF e HTML</p>
+              </div>
             </div>
+
+            {/* Certificado */}
+            <div className="space-y-3">
+              <a
+                href={exampleCertificateURL}
+                className="btn-secondary w-full inline-flex items-center justify-center space-x-2"
+              >
+                <QrCode size={20} />
+                <span>Ver Certificado</span>
+              </a>
+              <div className="text-sm text-gray-600">
+                <p>🏆 Certificado de finalización</p>
+                <p>⭐ Con calificación y duración</p>
+                <p>📋 Diseño profesional</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+            <p>
+              <strong>Especificaciones técnicas:</strong>
+            </p>
+            <p className="mt-1">
+              ✅ Formato estándar definitivo con parámetro 'd'
+            </p>
+            <p>✅ Compatible con nombres completos (sin truncar)</p>
+            <p>✅ Empresa CourseraClone Academy automática</p>
+            <p>✅ Soporte completo para caracteres especiales (ñ, tildes)</p>
+            <p>✅ Routing corregido para GitHub Pages</p>
           </div>
         </div>
       </main>

@@ -69,20 +69,41 @@ function expandQRData(data: any): any {
     typeof data.c === "string" ? cleanEncodingIssues(data.c) : data.c;
 
   // Convertir formato estándar a formato completo
-  return {
+  const baseData = {
     type: data.t === "r" ? "receipt" : data.t === "c" ? "certificate" : data.t,
     id: data.i,
     student: cleanStudent,
     course: cleanCourse,
-    date: data.d,
-    amount: data.a,
     courseType:
       data.ct === "c" ? "course" : data.ct === "e" ? "specialization" : data.ct,
-    // Información adicional que se agrega automáticamente
-    company: "CourseraClone Academy",
-    studentId: data.i, // Usar el id de boleta como studentId
-    activityId: data.i, // Usar el id de boleta como activityId
+    studentId: data.i, // Usar el id como studentId
+    activityId: data.i, // Usar el id como activityId
   };
+
+  // Para comprobantes de pago
+  if (data.t === "r") {
+    return {
+      ...baseData,
+      date: data.d,
+      amount: data.a,
+      company: "CourseraClone Academy",
+    };
+  }
+
+  // Para certificados
+  if (data.t === "c") {
+    return {
+      ...baseData,
+      completionDate: data.cd || data.d, // fecha de completación
+      issueDate: data.id || new Date().toISOString().split("T")[0], // fecha de emisión
+      organization: "CourseraClone Academy",
+      grade: data.g, // calificación (opcional)
+      duration: data.dur, // duración (opcional)
+    };
+  }
+
+  // Fallback para formatos no reconocidos
+  return baseData;
 }
 
 /**

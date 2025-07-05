@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { ReceiptViewer } from "@/components/ReceiptViewer";
+import { CertificateViewer } from "@/components/CertificateViewer";
 import { PDFGenerator } from "@/components/PDFGenerator";
 import { ErrorPage } from "@/components/ErrorPage";
-import { parseURLPayload, validateReceiptData } from "@/utils/dataParser";
-import { ReceiptData } from "@/types";
+import {
+  parseURLPayload,
+  validateReceiptData,
+  validateCertificateData,
+} from "@/utils/dataParser";
+import { DocumentData, ReceiptData, CertificateData } from "@/types";
 import { Loader2 } from "lucide-react";
 
 export const VerifyPage: React.FC = () => {
-  const [data, setData] = useState<ReceiptData | null>(null);
+  const [data, setData] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,8 +26,18 @@ export const VerifyPage: React.FC = () => {
         return;
       }
 
-      if (!validateReceiptData(parsedData)) {
-        setError("Los datos del documento no son válidos");
+      // Validar según el tipo de documento
+      if (parsedData.type === "receipt" && !validateReceiptData(parsedData)) {
+        setError("Los datos del comprobante no son válidos");
+        setLoading(false);
+        return;
+      }
+
+      if (
+        parsedData.type === "certificate" &&
+        !validateCertificateData(parsedData)
+      ) {
+        setError("Los datos del certificado no son válidos");
         setLoading(false);
         return;
       }
@@ -56,9 +71,20 @@ export const VerifyPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4 max-w-md">
-        <ReceiptViewer data={data} />
-        <PDFGenerator data={data} />
+      <div className="container mx-auto px-4 max-w-4xl">
+        {data.type === "receipt" ? (
+          <>
+            <ReceiptViewer data={data as ReceiptData} />
+            <PDFGenerator data={data as ReceiptData} />
+          </>
+        ) : data.type === "certificate" ? (
+          <>
+            <CertificateViewer data={data as CertificateData} />
+            {/* TODO: Implementar CertificatePDFGenerator */}
+          </>
+        ) : (
+          <ErrorPage message="Tipo de documento no reconocido" />
+        )}
       </div>
     </div>
   );

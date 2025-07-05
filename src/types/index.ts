@@ -12,7 +12,7 @@ export interface ReceiptData {
   activityId: number;
 }
 
-// Tipos para certificados (para futura implementación)
+// Tipos para certificados
 export interface CertificateData {
   type: "certificate";
   id: number;
@@ -23,6 +23,7 @@ export interface CertificateData {
   organization: string;
   grade?: string;
   duration?: string;
+  courseType: "course" | "specialization";
   studentId: number;
   activityId: number;
 }
