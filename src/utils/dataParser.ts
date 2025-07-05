@@ -1,6 +1,59 @@
 import { ReceiptData, CertificateData, DocumentData } from "@/types";
 
 /**
+ * Decodifica base64 con soporte UTF-8 robusto
+ */
+function decodeBase64UTF8(base64String: string): string {
+  try {
+    // Limpiar el base64 de espacios y caracteres no válidos
+    const cleanBase64 = base64String.replace(/\s/g, "");
+
+    // Decodificar usando atob
+    const decoded = atob(cleanBase64);
+
+    // Convertir a UTF-8 usando TextDecoder (método moderno)
+    if (typeof TextDecoder !== "undefined") {
+      const bytes = new Uint8Array(
+        [...decoded].map((char) => char.charCodeAt(0))
+      );
+      const decoder = new TextDecoder("utf-8");
+      return decoder.decode(bytes);
+    }
+
+    // Fallback: usar decodeURIComponent con escape
+    try {
+      return decodeURIComponent(escape(decoded));
+    } catch {
+      // Último recurso: decodificación directa
+      return decoded;
+    }
+  } catch (error) {
+    console.error("Error decoding base64:", error);
+    throw error;
+  }
+}
+
+/**
+ * Limpia caracteres de encoding mal formateados
+ */
+function cleanEncodingIssues(text: string): string {
+  // Reemplazar caracteres mal codificados comunes
+  return text
+    .replace(/Ã¡/g, "á")
+    .replace(/Ã©/g, "é")
+    .replace(/Ã­/g, "í")
+    .replace(/Ã³/g, "ó")
+    .replace(/Ãº/g, "ú")
+    .replace(/Ã±/g, "ñ")
+    .replace(/Ã¼/g, "ü")
+    .replace(/Ã /g, "à")
+    .replace(/Ã¨/g, "è")
+    .replace(/Ã¬/g, "ì")
+    .replace(/Ã²/g, "ò")
+    .replace(/Ã¹/g, "ù");
+}
+
+/**
  * Convierte el formato estándar del QR al formato completo de la aplicación
  */
 function expandQRData(data: any): any {
@@ -9,12 +62,18 @@ function expandQRData(data: any): any {
     return data;
   }
 
+  // Limpiar problemas de encoding en strings
+  const cleanStudent =
+    typeof data.s === "string" ? cleanEncodingIssues(data.s) : data.s;
+  const cleanCourse =
+    typeof data.c === "string" ? cleanEncodingIssues(data.c) : data.c;
+
   // Convertir formato estándar a formato completo
   return {
     type: data.t === "r" ? "receipt" : data.t === "c" ? "certificate" : data.t,
     id: data.i,
-    student: data.s,
-    course: data.c,
+    student: cleanStudent,
+    course: cleanCourse,
     date: data.d,
     amount: data.a,
     courseType:
@@ -41,8 +100,8 @@ export function parseURLPayload(): DocumentData | null {
       throw new Error("No payload found in URL");
     }
 
-    // Decodificar base64
-    const jsonData = atob(payload);
+    // Decodificar base64 con soporte UTF-8 mejorado
+    const jsonData = decodeBase64UTF8(payload);
     const rawData = JSON.parse(jsonData);
 
     // Expandir datos del formato estándar

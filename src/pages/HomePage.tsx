@@ -4,7 +4,7 @@ import { QrCode, Shield, Download, Smartphone } from "lucide-react";
 export const HomePage: React.FC = () => {
   // Payload con formato estándar definitivo y encoding UTF-8 correcto
   const standardPayload =
-    "eyJ0IjoiciIsImkiOjEyMzQ1LCJzIjoiTWFyw61hIEpvc8OpIEdhcmPDrWEgUm9kcsOtZ3VleiIsImMiOiJEZXNhcnJvbGxvIEZ1bGwgU3RhY2sgY29uIFJlYWN0IHkgTm9kZS5qcyIsImQiOiIyMDI0LTEyLTE1IiwiYSI6Mjk5Ljk5LCJjdCI6ImMifQ0K";
+    "eyJ0IjoiciIsImkiOjEyMzQ1LCJzIjoiTWFyw61hIEpvc8OpIEdhcmPDrWEgUm9kcsOtZ3VleiIsImMiOiJEZXNhcnJvbGxvIEZ1bGwgU3RhY2sgY29uIFJlYWN0IHkgTm9kZS5qcyIsImQiOiIyMDI0LTEyLTE1IiwiYSI6Mjk5Ljk5LCJjdCI6ImMifQ==";
   const exampleURL = `/WebServices-for-CourseraClone/v?d=${standardPayload}`;
   const exampleQRURL = `https://trinity-bytes.github.io/WebServices-for-CourseraClone/v?d=${standardPayload}`;
 
