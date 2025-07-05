@@ -7,6 +7,7 @@ export interface ReceiptData {
   date: string;
   amount: number;
   courseType: "course" | "specialization";
+  company: string;
   studentId: number;
   activityId: number;
 }
