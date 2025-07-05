@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ReceiptViewer } from "@/components/ReceiptViewer";
 import { CertificateViewer } from "@/components/CertificateViewer";
 import { PDFGenerator } from "@/components/PDFGenerator";
+import { CertificatePDFGenerator } from "@/components/CertificatePDFGenerator";
 import { ErrorPage } from "@/components/ErrorPage";
 import {
   parseURLPayload,
@@ -80,7 +81,7 @@ export const VerifyPage: React.FC = () => {
         ) : data.type === "certificate" ? (
           <>
             <CertificateViewer data={data as CertificateData} />
-            {/* TODO: Implementar CertificatePDFGenerator */}
+            <CertificatePDFGenerator data={data as CertificateData} />
           </>
         ) : (
           <ErrorPage message="Tipo de documento no reconocido" />
