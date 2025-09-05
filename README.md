@@ -4,13 +4,11 @@ Una aplicación web mobile-first para verificar comprobantes de pago y certifica
 
 <!-- Última actualización: Septiembre 2025 — mejoras PDF certificados, limpieza del repo y tips para PowerShell -->
 
+![Vista previa de la app: Verificador de comprobantes y certificados](.github/assets/CourseraClone-Verificador-de-Comprobantes.png)
+
 ## 🚀 Demo
 
 **URL de producción:** https://trinity-bytes.github.io/WebServices-for-CourseraClone/
-
-## 🖼️ Vista previa
-
-![Vista previa de la app: Verificador de comprobantes y certificados](.github/assets/CourseraClone-Verificador-de-Comprobantes.png)
 
 ### Prueba la funcionalidad
 
