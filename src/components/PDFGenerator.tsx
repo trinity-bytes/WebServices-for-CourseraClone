@@ -20,7 +20,7 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     try {
       // Configurar opciones para html2canvas
       const canvas = await html2canvas(printRef.current, {
-        scale: 2, // Mayor resolución
+        scale: Math.max(2, window.devicePixelRatio || 1), // Mayor resolución en pantallas retina
         useCORS: true,
         backgroundColor: "#ffffff",
         width: printRef.current.offsetWidth,
@@ -242,6 +242,7 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             borderRadius: "8px",
             overflow: "hidden",
           }}
+          aria-label="Descargar comprobante en PDF"
         >
           {/* Header */}
           <div
@@ -379,6 +380,7 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           onClick={handleDownloadPDF}
           disabled={isGenerating}
           className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50"
+          aria-label="Descargar comprobante en HTML"
         >
           {isGenerating ? (
             <>
@@ -396,6 +398,7 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         <button
           onClick={handleDownloadHTML}
           className="btn-secondary w-full flex items-center justify-center space-x-2"
+          aria-label="Compartir comprobante"
         >
           <Download size={20} />
           <span>Descargar HTML</span>

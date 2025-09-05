@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Download, Share2, Loader2 } from "lucide-react";
 import { CertificateData } from "@/types";
 import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import { formatDate } from "@/utils/dataParser";
 
 interface CertificatePDFGeneratorProps {
@@ -12,284 +13,52 @@ export const CertificatePDFGenerator: React.FC<
   CertificatePDFGeneratorProps
 > = ({ data }) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPDF = async () => {
     setIsGenerating(true);
     try {
-      // Crear PDF con jsPDF en formato horizontal para certificados
+      if (!printRef.current) {
+        throw new Error("No se encontró el contenedor para imprimir");
+      }
+
+      // Capturar DOM en alta resolución
+      const canvas = await html2canvas(printRef.current, {
+        scale: Math.max(2, window.devicePixelRatio || 1),
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        width: printRef.current.offsetWidth,
+        height: printRef.current.offsetHeight,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "mm",
         format: "a4",
       });
 
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 20;
-      const contentWidth = pageWidth - margin * 2;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = (pdfHeight - imgHeight * ratio) / 2;
 
-      // Configurar colores
-      const primaryBlue = [0, 86, 211]; // #0056D3
-      const darkBlue = [30, 64, 175]; // #1e40af
-      const lightGray = [102, 102, 102]; // #666
-      const darkGray = [51, 51, 51]; // #333
-      const green = [22, 163, 74]; // #16a34a
-
-      // Función para añadir gradiente simulado (con rectángulos)
-      const addGradientHeader = () => {
-        // Fondo azul principal
-        pdf.setFillColor(primaryBlue[0], primaryBlue[1], primaryBlue[2]);
-        pdf.rect(0, 0, pageWidth, 50, "F");
-
-        // Simular gradiente con rectángulos más claros
-        pdf.setFillColor(darkBlue[0], darkBlue[1], darkBlue[2]);
-        pdf.rect(pageWidth * 0.3, 0, pageWidth * 0.7, 50, "F");
-      };
-
-      // Header con gradiente
-      addGradientHeader();
-
-      // Título principal (sin emoji para evitar problemas de encoding)
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(26);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("CERTIFICADO DE FINALIZACION", pageWidth / 2, 25, {
-        align: "center",
-      });
-
-      // Organización
-      pdf.setFontSize(14);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(data.organization, pageWidth / 2, 35, { align: "center" });
-
-      // Número de certificado
-      const certNumber = `Certificado Nº CERT-${data.id
-        .toString()
-        .padStart(5, "0")}`;
-      pdf.setTextColor(primaryBlue[0], primaryBlue[1], primaryBlue[2]);
-      pdf.setFontSize(16);
-      pdf.setFont("helvetica", "bold");
-
-      // Fondo para el número de certificado
-      const certNumWidth = pdf.getTextWidth(certNumber) + 20;
-      const certNumX = (pageWidth - certNumWidth) / 2;
-      pdf.setFillColor(240, 247, 255); // #f0f7ff
-      pdf.setDrawColor(primaryBlue[0], primaryBlue[1], primaryBlue[2]);
-      pdf.roundedRect(certNumX, 60, certNumWidth, 12, 6, 6, "FD");
-
-      pdf.text(certNumber, pageWidth / 2, 68, { align: "center" });
-
-      // Texto principal
-      let currentY = 85;
-
-      pdf.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
-      pdf.setFontSize(16);
-      pdf.setFont("helvetica", "normal");
-      pdf.text("Se certifica que", pageWidth / 2, currentY, {
-        align: "center",
-      });
-
-      currentY += 12;
-
-      // Nombre del estudiante
-      pdf.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
-      pdf.setFontSize(28);
-      pdf.setFont("helvetica", "bold");
-      const studentName = data.student;
-      pdf.text(studentName, pageWidth / 2, currentY, { align: "center" });
-
-      // Línea debajo del nombre
-      const nameWidth = pdf.getTextWidth(studentName);
-      const lineStartX = (pageWidth - nameWidth) / 2;
-      pdf.setDrawColor(primaryBlue[0], primaryBlue[1], primaryBlue[2]);
-      pdf.setLineWidth(2);
-      pdf.line(lineStartX, currentY + 3, lineStartX + nameWidth, currentY + 3);
-
-      currentY += 18;
-
-      pdf.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
-      pdf.setFontSize(16);
-      pdf.setFont("helvetica", "normal");
-      pdf.text("ha completado exitosamente el curso", pageWidth / 2, currentY, {
-        align: "center",
-      });
-
-      currentY += 12;
-
-      // Título del curso
-      pdf.setTextColor(primaryBlue[0], primaryBlue[1], primaryBlue[2]);
-      pdf.setFontSize(20);
-      pdf.setFont("helvetica", "bold");
-
-      // Dividir el título del curso en líneas si es muy largo
-      const courseTitle = data.course;
-      const maxLineWidth = contentWidth - 40;
-      const courseLines = pdf.splitTextToSize(courseTitle, maxLineWidth);
-
-      for (let i = 0; i < courseLines.length; i++) {
-        pdf.text(courseLines[i], pageWidth / 2, currentY + i * 7, {
-          align: "center",
-        });
-      }
-
-      currentY += courseLines.length * 7 + 18;
-
-      // Detalles en dos columnas
-      const col1X = margin + 20;
-      const col2X = pageWidth / 2 + 10;
-      const boxWidth = contentWidth / 2 - 30;
-      const boxHeight = 16;
-
-      // Función para crear caja de detalle
-      const createDetailBox = (
-        x: number,
-        y: number,
-        label: string,
-        value: string,
-        isGrade = false
-      ) => {
-        // Fondo de la caja
-        const bgColor = isGrade ? [240, 253, 244] : [248, 249, 250]; // #f0fdf4 : #f8f9fa
-        const borderColor = isGrade ? green : primaryBlue;
-
-        pdf.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-        pdf.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
-        pdf.setLineWidth(0.5);
-        pdf.roundedRect(x, y, boxWidth, boxHeight, 3, 3, "FD");
-
-        // Línea izquierda de color
-        pdf.setLineWidth(3);
-        pdf.line(x, y, x, y + boxHeight);
-
-        // Label
-        pdf.setTextColor(
-          isGrade ? green[0] : lightGray[0],
-          isGrade ? green[1] : lightGray[1],
-          isGrade ? green[2] : lightGray[2]
-        );
-        pdf.setFontSize(8);
-        pdf.setFont("helvetica", "bold");
-        pdf.text(label, x + 5, y + 6);
-
-        // Value
-        pdf.setTextColor(
-          isGrade ? 21 : darkGray[0],
-          isGrade ? 128 : darkGray[1],
-          isGrade ? 61 : darkGray[2]
-        );
-        pdf.setFontSize(11);
-        pdf.setFont("helvetica", isGrade ? "bold" : "normal");
-        pdf.text(value, x + 5, y + 13);
-      };
-
-      // Crear cajas de detalles
-      createDetailBox(
-        col1X,
-        currentY,
-        "Fecha de Finalizacion",
-        formatDate(data.completionDate)
-      );
-      createDetailBox(
-        col2X,
-        currentY,
-        "Fecha de Emision",
-        formatDate(data.issueDate)
+      pdf.addImage(
+        imgData,
+        "PNG",
+        imgX,
+        imgY,
+        imgWidth * ratio,
+        imgHeight * ratio
       );
 
-      currentY += 20;
-
-      if (data.duration || data.grade) {
-        if (data.duration) {
-          createDetailBox(col1X, currentY, "Duracion", data.duration);
-        }
-        if (data.grade) {
-          createDetailBox(
-            data.duration ? col2X : col1X,
-            currentY,
-            "Calificacion",
-            data.grade,
-            true
-          );
-        }
-        currentY += 20;
-      }
-
-      // Línea de separación
-      currentY += 10;
-      pdf.setDrawColor(229, 231, 235); // #e5e7eb
-      pdf.setLineWidth(1);
-      pdf.line(margin, currentY, pageWidth - margin, currentY);
-      currentY += 10;
-
-      // Sección de verificación y autoridad
-      // Verificado (izquierda)
-      pdf.setTextColor(green[0], green[1], green[2]);
-      pdf.setFontSize(14);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Certificado Verificado", margin + 20, currentY);
-
-      // Autoridad (derecha)
-      pdf.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
-      pdf.setFontSize(16);
-      pdf.setFont("helvetica", "bold");
-      pdf.text(data.organization, pageWidth - margin - 20, currentY, {
-        align: "right",
-      });
-
-      pdf.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(
-        "Autoridad Certificadora",
-        pageWidth - margin - 20,
-        currentY + 8,
-        { align: "right" }
-      );
-
-      if (data.activityId) {
-        pdf.setFontSize(10);
-        pdf.text(
-          `Actividad ID: ${data.activityId}`,
-          pageWidth - margin - 20,
-          currentY + 16,
-          { align: "right" }
-        );
-        currentY += 20; // Ajustar si hay activityId
-      } else {
-        currentY += 12; // Ajustar si no hay activityId
-      }
-
-      // Footer - Posicionar después del contenido con margen suficiente
-      currentY += 15; // Espacio adicional antes del footer
-
-      // Verificar que el footer no se salga de la página
-      const maxFooterY = pageHeight - 20;
-      const footerY = Math.min(currentY, maxFooterY);
-
-      pdf.setDrawColor(229, 231, 235);
-      pdf.setLineWidth(0.5);
-      pdf.line(margin, footerY, pageWidth - margin, footerY);
-
-      pdf.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
-      pdf.setFontSize(8);
-      pdf.setFont("helvetica", "normal");
-
-      const footerText1 = "Este certificado es valido y verificable.";
-      const footerText2 = `Emitido electronicamente por ${data.organization} - Certificado ID: ${data.id}`;
-      const footerText3 = `Fecha de emision: ${new Date().toLocaleDateString(
-        "es-ES"
-      )}`;
-
-      pdf.text(footerText1, pageWidth / 2, footerY + 6, { align: "center" });
-      pdf.text(footerText2, pageWidth / 2, footerY + 11, { align: "center" });
-      pdf.text(footerText3, pageWidth / 2, footerY + 16, { align: "center" });
-
-      // Descargar el PDF
       const fileName = `certificado-${data.id}-${data.student
         .replace(/\s+/g, "-")
         .replace(/[^a-zA-Z0-9-_]/g, "")
         .toLowerCase()}.pdf`;
-
       pdf.save(fileName);
     } catch (error) {
       console.error("Error generando PDF del certificado:", error);
@@ -604,12 +373,268 @@ export const CertificatePDFGenerator: React.FC<
 
   return (
     <>
+      {/* Elemento oculto para captura del PDF (A4 landscape ~ 1.414 ratio) */}
+      <div
+        ref={printRef}
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: "-9999px",
+          width: "1754px", // ~ A4 landscape at moderate pixel size
+          height: "1240px",
+          backgroundColor: "#ffffff",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "Arial, sans-serif",
+            backgroundColor: "#ffffff",
+            borderRadius: "12px",
+            overflow: "hidden",
+            border: "3px solid #0056D3",
+            boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              background: "linear-gradient(135deg, #0056D3 0%, #1e40af 100%)",
+              color: "#ffffff",
+              padding: "32px 24px",
+              textAlign: "center",
+              position: "relative",
+            }}
+          >
+            <h1 style={{ margin: 0, fontSize: 36, fontWeight: 700 }}>
+              CERTIFICADO DE FINALIZACIÓN
+            </h1>
+            <p style={{ margin: "6px 0 0 0", opacity: 0.9, fontSize: 18 }}>
+              {data.organization}
+            </p>
+          </div>
+
+          {/* Content */}
+          <div style={{ padding: 32, flex: 1 }}>
+            <div style={{ textAlign: "center", marginBottom: 24 }}>
+              <span
+                style={{
+                  background: "#f0f7ff",
+                  border: "2px solid #0056D3",
+                  color: "#0056D3",
+                  padding: "10px 18px",
+                  borderRadius: 999,
+                  fontWeight: 700,
+                  fontSize: 18,
+                }}
+              >
+                Certificado Nº CERT-{data.id.toString().padStart(5, "0")}
+              </span>
+            </div>
+
+            <div style={{ textAlign: "center", marginBottom: 28 }}>
+              <p style={{ fontSize: 22, color: "#666", margin: "0 0 12px" }}>
+                Se certifica que
+              </p>
+              <div
+                style={{
+                  fontSize: 42,
+                  fontWeight: 800,
+                  color: "#1f2937",
+                  display: "inline-block",
+                  paddingBottom: 8,
+                  borderBottom: "4px solid #0056D3",
+                }}
+              >
+                {data.student}
+              </div>
+              <p style={{ fontSize: 20, color: "#666", margin: "14px 0 0" }}>
+                ha completado exitosamente el curso
+              </p>
+              <div
+                style={{
+                  fontSize: 26,
+                  color: "#0056D3",
+                  fontWeight: 700,
+                  marginTop: 10,
+                }}
+              >
+                {data.course}
+              </div>
+            </div>
+
+            {/* Details Grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 16,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  background: "#f8f9fa",
+                  borderLeft: "5px solid #0056D3",
+                  borderRadius: 10,
+                  padding: 16,
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: 700,
+                    color: "#666",
+                    fontSize: 12,
+                    marginBottom: 4,
+                  }}
+                >
+                  Estudiante
+                </div>
+                <div
+                  style={{ color: "#111827", fontSize: 16, fontWeight: 600 }}
+                >
+                  {data.student}
+                </div>
+                <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 4 }}>
+                  ID: {data.studentId}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: "#f8f9fa",
+                  borderLeft: "5px solid #0056D3",
+                  borderRadius: 10,
+                  padding: 16,
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: 700,
+                    color: "#666",
+                    fontSize: 12,
+                    marginBottom: 4,
+                  }}
+                >
+                  Fecha de Finalización
+                </div>
+                <div
+                  style={{ color: "#111827", fontSize: 16, fontWeight: 600 }}
+                >
+                  {formatDate(data.completionDate)}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: "#f8f9fa",
+                  borderLeft: "5px solid #0056D3",
+                  borderRadius: 10,
+                  padding: 16,
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: 700,
+                    color: "#666",
+                    fontSize: 12,
+                    marginBottom: 4,
+                  }}
+                >
+                  Fecha de Emisión
+                </div>
+                <div
+                  style={{ color: "#111827", fontSize: 16, fontWeight: 600 }}
+                >
+                  {formatDate(data.issueDate)}
+                </div>
+              </div>
+
+              {data.duration && (
+                <div
+                  style={{
+                    background: "#f8f9fa",
+                    borderLeft: "5px solid #0056D3",
+                    borderRadius: 10,
+                    padding: 16,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      color: "#666",
+                      fontSize: 12,
+                      marginBottom: 4,
+                    }}
+                  >
+                    Duración
+                  </div>
+                  <div
+                    style={{ color: "#111827", fontSize: 16, fontWeight: 600 }}
+                  >
+                    {data.duration}
+                  </div>
+                </div>
+              )}
+
+              {data.grade && (
+                <div
+                  style={{
+                    background: "#f0fdf4",
+                    borderLeft: "5px solid #16a34a",
+                    borderRadius: 10,
+                    padding: 16,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      color: "#16a34a",
+                      fontSize: 12,
+                      marginBottom: 4,
+                    }}
+                  >
+                    Calificación
+                  </div>
+                  <div
+                    style={{ color: "#15803d", fontSize: 16, fontWeight: 700 }}
+                  >
+                    {data.grade}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div
+              style={{
+                borderTop: "1px solid #e5e7eb",
+                paddingTop: 16,
+                textAlign: "center",
+                color: "#6b7280",
+                fontSize: 12,
+              }}
+            >
+              <p style={{ margin: 0 }}>
+                Este certificado es válido y verificable.
+              </p>
+              <p style={{ margin: "6px 0 0 0" }}>
+                Emitido electrónicamente por {data.organization} • Certificado
+                ID: {data.id} • {new Date().toLocaleDateString("es-ES")}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Botones de descarga */}
       <div className="mt-6 space-y-3">
         <button
           onClick={handleDownloadPDF}
           disabled={isGenerating}
           className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50"
+          aria-label="Descargar certificado en PDF"
         >
           {isGenerating ? (
             <>
@@ -627,6 +652,7 @@ export const CertificatePDFGenerator: React.FC<
         <button
           onClick={handleDownloadHTML}
           className="btn-secondary w-full flex items-center justify-center space-x-2"
+          aria-label="Descargar certificado en HTML"
         >
           <Download size={20} />
           <span>Descargar HTML</span>
@@ -635,6 +661,7 @@ export const CertificatePDFGenerator: React.FC<
         <button
           onClick={handleShare}
           className="btn-secondary w-full flex items-center justify-center space-x-2"
+          aria-label="Compartir certificado"
         >
           <Share2 size={20} />
           <span>Compartir Certificado</span>

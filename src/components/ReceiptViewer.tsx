@@ -8,13 +8,16 @@ interface ReceiptViewerProps {
 }
 
 export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
+  const TAX_RATE = 0.18; // IGV Perú
+  const subtotal = data.amount / (1 + TAX_RATE);
+  const tax = data.amount - subtotal;
   return (
     <div className="receipt-container">
       {/* Header */}
-      <div className="bg-coursera-blue text-white p-6 text-center">
-        <Receipt className="mx-auto mb-2" size={32} />
+      <div className="bg-gradient-to-r from-coursera-blue to-blue-600 text-white p-6 text-center">
+        <Receipt className="mx-auto mb-2" size={32} aria-hidden />
         <h1 className="text-xl font-bold">COMPROBANTE DE PAGO</h1>
-        <p className="text-blue-100 text-sm mt-1">CourseraClone Academy</p>
+        <p className="text-blue-100 text-sm mt-1">{data.company}</p>
       </div>
 
       {/* Content */}
@@ -23,7 +26,7 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
         <div className="text-center border-b border-gray-200 pb-4">
           <p className="text-sm text-gray-600">Nº de Comprobante</p>
           <p className="text-lg font-bold text-coursera-blue">
-            COMP-{data.id.toString().padStart(3, "0")}
+            COMP-{data.id.toString().padStart(5, "0")}
           </p>
         </div>
 
@@ -33,6 +36,7 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
             <BookOpen
               className="text-coursera-blue mt-1 flex-shrink-0"
               size={20}
+              aria-hidden
             />
             <div>
               <p className="text-sm text-gray-600">Curso</p>
@@ -46,7 +50,11 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
           </div>
 
           <div className="flex items-start space-x-3">
-            <User className="text-coursera-blue mt-1 flex-shrink-0" size={20} />
+            <User
+              className="text-coursera-blue mt-1 flex-shrink-0"
+              size={20}
+              aria-hidden
+            />
             <div>
               <p className="text-sm text-gray-600">Estudiante</p>
               <p className="font-semibold text-gray-900">{data.student}</p>
@@ -58,6 +66,7 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
             <Calendar
               className="text-coursera-blue mt-1 flex-shrink-0"
               size={20}
+              aria-hidden
             />
             <div>
               <p className="text-sm text-gray-600">Fecha de Pago</p>
@@ -71,6 +80,7 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
             <CreditCard
               className="text-coursera-blue mt-1 flex-shrink-0"
               size={20}
+              aria-hidden
             />
             <div className="w-full">
               <p className="text-sm text-gray-600">Método de Pago</p>
@@ -89,11 +99,11 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ data }) => {
           <div className="space-y-1 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Subtotal:</span>
-              <span>{formatAmount(data.amount * 0.85)}</span>
+              <span>{formatAmount(subtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">IGV (18%):</span>
-              <span>{formatAmount(data.amount * 0.15)}</span>
+              <span>{formatAmount(tax)}</span>
             </div>
             <div className="flex justify-between font-semibold text-gray-900 pt-1 border-t">
               <span>Total:</span>

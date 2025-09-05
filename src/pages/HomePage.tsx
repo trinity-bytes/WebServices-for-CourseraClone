@@ -124,6 +124,7 @@ export const HomePage: React.FC = () => {
               <a
                 href={exampleReceiptURL}
                 className="btn-primary w-full inline-flex items-center justify-center space-x-2"
+                aria-label="Ver comprobante de pago de ejemplo"
               >
                 <QrCode size={20} />
                 <span>Ver Comprobante de Pago</span>
@@ -140,6 +141,7 @@ export const HomePage: React.FC = () => {
               <a
                 href={exampleCertificateURL}
                 className="btn-secondary w-full inline-flex items-center justify-center space-x-2"
+                aria-label="Ver certificado de ejemplo"
               >
                 <QrCode size={20} />
                 <span>Ver Certificado</span>

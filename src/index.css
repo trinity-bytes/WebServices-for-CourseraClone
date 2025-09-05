@@ -19,11 +19,11 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-coursera-blue text-white py-3 px-6 rounded-lg font-medium text-base min-h-[44px] transition-colors duration-200 hover:bg-blue-700 active:bg-blue-800;
+    @apply bg-coursera-blue text-white py-3 px-6 rounded-lg font-medium text-base min-h-[44px] transition-colors duration-200 hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300;
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 py-3 px-6 rounded-lg font-medium text-base min-h-[44px] transition-colors duration-200 hover:bg-gray-300 active:bg-gray-400;
+    @apply bg-gray-200 text-gray-800 py-3 px-6 rounded-lg font-medium text-base min-h-[44px] transition-colors duration-200 hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300;
   }
 
   .card {
@@ -32,5 +32,18 @@
 
   .receipt-container {
     @apply max-w-md mx-auto bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden;
+  }
+}
+
+/* Print-friendly styles */
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  .card,
+  .receipt-container {
+    box-shadow: none !important;
+    border: none !important;
   }
 }

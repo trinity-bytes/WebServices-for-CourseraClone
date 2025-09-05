@@ -18,18 +18,18 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
   data,
 }) => {
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg ring-1 ring-gray-200 overflow-hidden">
       {/* Header elegante para certificado */}
       <div className="bg-gradient-to-r from-coursera-blue to-blue-600 text-white p-8 text-center relative">
         <div className="absolute top-4 left-4 opacity-20">
-          <Award size={64} />
+          <Award size={64} aria-hidden />
         </div>
         <div className="absolute top-4 right-4 opacity-20">
-          <GraduationCap size={64} />
+          <GraduationCap size={64} aria-hidden />
         </div>
 
         <div className="relative z-10">
-          <Award className="mx-auto mb-4" size={48} />
+          <Award className="mx-auto mb-4" size={48} aria-hidden />
           <h1 className="text-3xl font-bold mb-2">
             CERTIFICADO DE FINALIZACIÓN
           </h1>

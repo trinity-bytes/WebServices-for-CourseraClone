@@ -68,16 +68,20 @@ function expandQRData(data: any): any {
   const cleanCourse =
     typeof data.c === "string" ? cleanEncodingIssues(data.c) : data.c;
 
+  // Coerción segura a tipos esperados
+  const idNum = typeof data.i === "string" ? parseInt(data.i, 10) : data.i;
+  const amountNum = typeof data.a === "string" ? parseFloat(data.a) : data.a;
+
   // Convertir formato estándar a formato completo
   const baseData = {
     type: data.t === "r" ? "receipt" : data.t === "c" ? "certificate" : data.t,
-    id: data.i,
+    id: idNum,
     student: cleanStudent,
     course: cleanCourse,
     courseType:
       data.ct === "c" ? "course" : data.ct === "e" ? "specialization" : data.ct,
-    studentId: data.i, // Usar el id como studentId
-    activityId: data.i, // Usar el id como activityId
+    studentId: idNum, // Usar el id como studentId
+    activityId: idNum, // Usar el id como activityId
   };
 
   // Para comprobantes de pago
@@ -85,7 +89,7 @@ function expandQRData(data: any): any {
     return {
       ...baseData,
       date: data.d,
-      amount: data.a,
+      amount: amountNum,
       company: "CourseraClone Academy",
     };
   }
@@ -194,5 +198,15 @@ export function formatDate(dateString: string): string {
  * Formatea el monto con moneda
  */
 export function formatAmount(amount: number): string {
-  return `S/ ${amount.toFixed(2)}`;
+  try {
+    return new Intl.NumberFormat("es-PE", {
+      style: "currency",
+      currency: "PEN",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    // Fallback si Intl no está disponible
+    return `S/ ${amount.toFixed(2)}`;
+  }
 }
