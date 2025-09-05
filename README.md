@@ -187,15 +187,6 @@ std::string generateReceiptURL(const ComprobanteDePago& comprobante) {
 - [ ] Dark mode
 - [ ] Multi-idioma
 
-## 🎨 Diseño
-
-El diseño sigue las especificaciones mobile-first con la paleta de colores de Coursera:
-
-- **Primary**: #0056D3 (Azul Coursera)
-- **Success**: #00C851 (Verde)
-- **Error**: #FF4444 (Rojo)
-- **Warning**: #FFBB33 (Amarillo)
-
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
