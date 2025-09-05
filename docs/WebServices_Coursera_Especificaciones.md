@@ -65,7 +65,7 @@ Desarrollar una plataforma web responsiva que reciba datos a través de URLs (ge
 
 ### Arquitectura de Componentes
 
-```
+```text
 src/
 ├── app/
 │   ├── receipt/
@@ -85,7 +85,7 @@ src/
 │   ├── pdfGenerator.ts       # Genera PDFs
 │   └── dataFormatter.ts      # Formatea datos para display
 └── styles/
-    └── globals.css
+	└── globals.css
 ```
 
 ---
@@ -98,7 +98,7 @@ src/
 
 **Formato de URL Esperado**:
 
-```
+```text
 https://coursera-receipts.vercel.app/receipt/[base64-encoded-json]
 https://coursera-receipts.vercel.app/certificate/[base64-encoded-json]
 ```
@@ -130,17 +130,19 @@ const finalURL = `https://coursera-receipts.vercel.app/receipt/${encodedData}`;
 - Validación básica de estructura de datos
 - Manejo de errores para URLs malformadas
 - Redirección a página de error si faltan datos
-  │ "Apunta la cámara │
-  │ al código QR" │
-  └─────────────────────┘
 
-````
+```text
+| "Apunta la cámara |
+| al código QR" |
+└───────────────────────
+```
 
 ### 2. Visualización de Comprobantes/Certificados
 
 **Descripción**: Muestra la información recibida por URL de forma elegante y profesional
 
 **Requerimientos**:
+
 - Diseño responsive optimizado para móviles
 - Layout diferenciado para comprobantes vs certificados
 - Información clara y bien estructurada
@@ -175,7 +177,7 @@ interface CertificateData {
   grade?: string;
   duration?: string;
 }
-````
+```
 
 **Validación Básica**:
 
@@ -194,45 +196,55 @@ function validateReceiptData(data: any): data is ReceiptData {
 
 ### Validación de Integridad
 
-````typescript
+```typescript
 // Ejemplo de validación de checksum
 function validateChecksum(data: any, providedChecksum: string): boolean {
   const dataString = JSON.stringify(data, Object.keys(data).sort());
   const calculatedHash = sha256(dataString + SECRET_SALT);
   return `sha256:${calculatedHash}` === providedChecksum;
 }
+```
 
 ### 3. Generación de PDF
 
 **Descripción**: Permite al usuario descargar/guardar el comprobante o certificado como PDF
 
 **Requerimientos**:
+
 - Generación de PDF de alta calidad
 - Diseño profesional para impresión
 - Optimización para dispositivos móviles
 - Descarga directa sin necesidad de backend
 
 **Librerías Recomendadas**:
+
 ```typescript
 // Opción 1: react-pdf (más control sobre diseño)
-import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import {
+  PDFDownloadLink,
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+} from "@react-pdf/renderer";
 
 // Opción 2: html2canvas + jsPDF (más simple)
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 // Opción 3: Puppeteer en servidor (mejor calidad)
 // Para casos que requieran calidad de impresión superior
-````
+```
 
 **UI Mobile-First para Comprobantes**:
 
 ```
-┌─────────────────────┐
-│ 🧾 COMPROBANTE     │
+┌───────────────────────┐
+│ 🗞 COMPROBANTE     │
 │                     │
 │ Nº COMP-001         │
-│ ───────────────     │
+│ ─────────────────    │
 │ 📚 JavaScript       │
 │    Fundamentals     │
 │                     │
@@ -245,15 +257,15 @@ import jsPDF from 'jspdf';
 │                     │
 │ 🏢 TechCorp Academy │
 │                     │
-│ [� Descargar PDF]  │
-│ [� Compartir]      │
-└─────────────────────┘
+│ [📄 Descargar PDF]  │
+│ [📱 Compartir]      │
+└───────────────────────┘
 ```
 
 **UI Mobile-First para Certificados**:
 
 ```
-┌─────────────────────┐
+┌───────────────────────┐
 │ 🎓 CERTIFICADO     │
 │                     │
 │ Se certifica que    │
@@ -273,7 +285,7 @@ import jsPDF from 'jspdf';
 │                     │
 │ [📄 Descargar PDF]  │
 │ [📱 Compartir]      │
-└─────────────────────┘
+└───────────────────────┘
 ```
 
 ### 4. Manejo de Errores
@@ -288,7 +300,7 @@ import jsPDF from 'jspdf';
 **UI de Error Mobile-First**:
 
 ```
-┌─────────────────────┐
+┌───────────────────────┐
 │ ❌ ERROR            │
 │                     │
 │ No se pudo cargar   │
@@ -300,7 +312,7 @@ import jsPDF from 'jspdf';
 │                     │
 │ [🔄 Reintentar]     │
 │ [🏠 Ir al Inicio]   │
-└─────────────────────┘
+└───────────────────────┘
 ```
 
 ---
@@ -436,55 +448,55 @@ El sistema C++ debe generar URLs que contengan los datos codificados en base64. 
 
 class URLGenerator {
 public:
-    static std::string generateReceiptURL(const ComprobanteDePago& comprobante);
-    static std::string generateCertificateURL(const Certificado& certificado);
+		static std::string generateReceiptURL(const ComprobanteDePago& comprobante);
+		static std::string generateCertificateURL(const Certificado& certificado);
 
 private:
-    static const std::string BASE_URL;
-    static std::string encodeToBase64(const nlohmann::json& data);
+		static const std::string BASE_URL;
+		static std::string encodeToBase64(const nlohmann::json& data);
 };
 
 // Implementation
 const std::string URLGenerator::BASE_URL = "https://coursera-receipts.vercel.app";
 
 std::string URLGenerator::generateReceiptURL(const ComprobanteDePago& comprobante) {
-    nlohmann::json data = {
-        {"type", "receipt"},
-        {"id", comprobante.getId()},
-        {"student", comprobante.getNombreEstudiante()},
-        {"course", comprobante.getNombreCurso()},
-        {"date", comprobante.getFechaEmision()},
-        {"amount", comprobante.getMonto()},
-        {"currency", "PEN"},
-        {"paymentMethod", comprobante.getMetodoPago()},
-        {"organization", comprobante.getNombreOrganizacion()},
-        {"courseType", comprobante.getTipoCurso()}
-    };
+		nlohmann::json data = {
+				{"type", "receipt"},
+				{"id", comprobante.getId()},
+				{"student", comprobante.getNombreEstudiante()},
+				{"course", comprobante.getNombreCurso()},
+				{"date", comprobante.getFechaEmision()},
+				{"amount", comprobante.getMonto()},
+				{"currency", "PEN"},
+				{"paymentMethod", comprobante.getMetodoPago()},
+				{"organization", comprobante.getNombreOrganizacion()},
+				{"courseType", comprobante.getTipoCurso()}
+		};
 
-    std::string encodedData = encodeToBase64(data);
-    return BASE_URL + "/receipt/" + encodedData;
+		std::string encodedData = encodeToBase64(data);
+		return BASE_URL + "/receipt/" + encodedData;
 }
 
 std::string URLGenerator::generateCertificateURL(const Certificado& certificado) {
-    nlohmann::json data = {
-        {"type", "certificate"},
-        {"id", certificado.getId()},
-        {"student", certificado.getNombreEstudiante()},
-        {"course", certificado.getNombreCurso()},
-        {"completionDate", certificado.getFechaCompletado()},
-        {"issueDate", certificado.getFechaEmision()},
-        {"organization", certificado.getNombreOrganizacion()},
-        {"grade", certificado.getCalificacion()},
-        {"duration", certificado.getDuracionCurso()}
-    };
+		nlohmann::json data = {
+				{"type", "certificate"},
+				{"id", certificado.getId()},
+				{"student", certificado.getNombreEstudiante()},
+				{"course", certificado.getNombreCurso()},
+				{"completionDate", certificado.getFechaCompletado()},
+				{"issueDate", certificado.getFechaEmision()},
+				{"organization", certificado.getNombreOrganizacion()},
+				{"grade", certificado.getCalificacion()},
+				{"duration", certificado.getDuracionCurso()}
+		};
 
-    std::string encodedData = encodeToBase64(data);
-    return BASE_URL + "/certificate/" + encodedData;
+		std::string encodedData = encodeToBase64(data);
+		return BASE_URL + "/certificate/" + encodedData;
 }
 
 std::string URLGenerator::encodeToBase64(const nlohmann::json& data) {
-    std::string jsonString = data.dump();
-    return Base64Encoder::encode(jsonString);
+		std::string jsonString = data.dump();
+		return Base64Encoder::encode(jsonString);
 }
 ```
 
@@ -494,28 +506,28 @@ std::string URLGenerator::encodeToBase64(const nlohmann::json& data) {
 // En el método _mostrarQRComprobante, reemplazar la generación QR actual:
 
 void _mostrarQRComprobante(const ComprobanteDePago& comprobante) {
-    _configurarConsolaParaQR();
+		_configurarConsolaParaQR();
 
-    try {
-        // Generar URL en lugar de JSON directo
-        std::string url = URLGenerator::generateReceiptURL(comprobante);
+		try {
+				// Generar URL en lugar de JSON directo
+				std::string url = URLGenerator::generateReceiptURL(comprobante);
 
-        // Generar QR con la URL
-        QRCode qr = generateQR(url);
+				// Generar QR con la URL
+				QRCode qr = generateQR(url);
 
-        // Display del QR y datos (mantener lógica existente)
-        // ...resto del código...
+				// Display del QR y datos (mantener lógica existente)
+				// ...resto del código...
 
-        // Mostrar también la URL para debug/testing
-        gotoxy(2, qr.size + 15);
-        setColor(ColorPalette::COURSERA_BLUE);
-        std::cout << "URL: " << url.substr(0, 50) << "...";
+				// Mostrar también la URL para debug/testing
+				gotoxy(2, qr.size + 15);
+				setColor(ColorPalette::COURSERA_BLUE);
+				std::cout << "URL: " << url.substr(0, 50) << "...";
 
-    } catch (const std::exception& e) {
-        // Manejo de errores...
-    }
+		} catch (const std::exception& e) {
+				// Manejo de errores...
+		}
 
-    _restaurarConsolaNormal();
+		_restaurarConsolaNormal();
 }
 ```
 
@@ -532,12 +544,12 @@ void _mostrarQRComprobante(const ComprobanteDePago& comprobante) {
 
 class Base64Encoder {
 public:
-    static std::string encode(const std::string& input);
-    static std::string decode(const std::string& input);
+		static std::string encode(const std::string& input);
+		static std::string decode(const std::string& input);
 
 private:
-    static const char encoding_table[];
-    static const int mod_table[];
+		static const char encoding_table[];
+		static const int mod_table[];
 };
 ```
 
@@ -548,18 +560,18 @@ Para testing, el sistema C++ puede generar URLs de prueba:
 ```cpp
 // Para testing durante desarrollo
 void testURLGeneration() {
-    ComprobanteDePago testReceipt;
-    testReceipt.setId("TEST-001");
-    testReceipt.setNombreEstudiante("Juan Pérez");
-    testReceipt.setNombreCurso("JavaScript Fundamentals");
-    testReceipt.setMonto(150.00);
+		ComprobanteDePago testReceipt;
+		testReceipt.setId("TEST-001");
+		testReceipt.setNombreEstudiante("Juan Pérez");
+		testReceipt.setNombreCurso("JavaScript Fundamentals");
+		testReceipt.setMonto(150.00);
 
-    std::string url = URLGenerator::generateReceiptURL(testReceipt);
-    std::cout << "Test URL: " << url << std::endl;
+		std::string url = URLGenerator::generateReceiptURL(testReceipt);
+		std::cout << "Test URL: " << url << std::endl;
 
-    // También generar QR con esta URL para testing
-    QRCode qr = generateQR(url);
-    displayQR(qr);
+		// También generar QR con esta URL para testing
+		QRCode qr = generateQR(url);
+		displayQR(qr);
 }
 ```
 
@@ -851,7 +863,6 @@ const imageObserver = new IntersectionObserver((entries) => {
 ### Phase 3: PWA Features (Semana 3-4)
 
 - [ ] **Service Worker**
-
   - [ ] Implementar caching strategy
   - [ ] Offline functionality básica
 

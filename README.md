@@ -81,19 +81,35 @@ npm run deploy
 ```
 src/
 ├── components/
-│   ├── ReceiptViewer.tsx    # Visualización de comprobantes
-│   ├── PDFGenerator.tsx     # Generación de PDFs
-│   └── ErrorPage.tsx        # Página de errores
+│   ├── ReceiptViewer.tsx          # Visualización de comprobantes
+│   ├── CertificateViewer.tsx      # Visualización de certificados
+│   ├── PDFGenerator.tsx           # Generación PDF para comprobantes
+│   ├── CertificatePDFGenerator.tsx# Generación PDF para certificados
+│   └── ErrorPage.tsx              # Página de errores
 ├── pages/
-│   ├── HomePage.tsx         # Página principal
-│   └── VerifyPage.tsx       # Página de verificación
+│   ├── HomePage.tsx               # Página principal
+│   └── VerifyPage.tsx             # Página de verificación
 ├── types/
-│   └── index.ts            # Tipos TypeScript
+│   └── index.ts                   # Tipos TypeScript
 ├── utils/
-│   └── dataParser.ts       # Parsing de datos URL
-├── App.tsx                 # Componente principal
-├── main.tsx               # Entry point
-└── index.css              # Estilos globales
+│   └── dataParser.ts             # Parsing y validaciones de datos
+├── App.tsx                        # Componente principal
+├── main.tsx                       # Entry point
+└── index.css                      # Estilos globales
+
+scripts/                           # Scripts auxiliares
+├── generate_payload.js
+├── generate_certificate.js
+├── analyze_generator.js
+└── README.md
+
+samples/                           # Ejemplos de payloads (JSON/base64)
+├── simple_payload.json
+├── test_payload.json
+└── temp_payload.json
+
+docs/                              # Documentación del proyecto
+└── WebServices_Coursera_Especificaciones.md
 ```
 
 ## 🔗 Uso con Sistema C++
