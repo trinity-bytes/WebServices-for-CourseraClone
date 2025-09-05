@@ -8,6 +8,10 @@ Una aplicación web mobile-first para verificar comprobantes de pago y certifica
 
 **URL de producción:** https://trinity-bytes.github.io/WebServices-for-CourseraClone/
 
+## 🖼️ Vista previa
+
+![Vista previa de la app: Verificador de comprobantes y certificados](.github/assets/CourseraClone-Verificador-de-Comprobantes.png)
+
 ### Prueba la funcionalidad
 
 Prueba con este comprobante de ejemplo:
@@ -81,7 +85,7 @@ npm run deploy
 
 ## 📊 Estructura del Proyecto
 
-```
+```text
 src/
 ├── components/
 │   ├── ReceiptViewer.tsx          # Visualización de comprobantes
