@@ -2,7 +2,7 @@
 
 Una aplicación web mobile-first para verificar comprobantes de pago y certificados del sistema CourseraClone mediante códigos QR.
 
-<!-- Última actualización: Julio 2025 - Arreglo de encoding UTF-8 -->
+<!-- Última actualización: Septiembre 2025 — mejoras PDF certificados, limpieza del repo y tips para PowerShell -->
 
 ## 🚀 Demo
 
@@ -12,7 +12,7 @@ Una aplicación web mobile-first para verificar comprobantes de pago y certifica
 
 Prueba con este comprobante de ejemplo:
 
-```
+```text
 https://trinity-bytes.github.io/WebServices-for-CourseraClone/verify/data?payload=eyJ0eXBlIjoicmVjZWlwdCIsImlkIjoxLCJzdHVkZW50IjoiRXN0dWRpYW50ZSBkZSBQcnVlYmEiLCJjb3Vyc2UiOiJDdXJzbyBkZSBQcm9ncmFtYWNpw7NuIiwiZGF0ZSI6IjIwMjQtMTItMTUiLCJhbW91bnQiOjk5Ljk5LCJjb3Vyc2VUeXBlIjoiY291cnNlIiwic3R1ZGVudElkIjoxMDAxLCJhY3Rpdml0eUlkIjoxMDF9
 ```
 
@@ -30,7 +30,7 @@ https://trinity-bytes.github.io/WebServices-for-CourseraClone/verify/data?payloa
 - Vite (Build tool)
 - Tailwind CSS (Styling)
 - React Router (Navigation)
-- React-PDF (PDF generation)
+- html2canvas + jsPDF (Generación de PDF con alta fidelidad)
 - Lucide React (Icons)
 - GitHub Pages (Hosting)
 
@@ -52,9 +52,12 @@ cd WebServices-for-CourseraClone
 
 # Instalar dependencias
 npm install
+```
 
-# Ejecutar en modo desarrollo
-npm run dev
+Nota (Windows PowerShell): si ves "running scripts is disabled on this system", ejecuta desarrollo así:
+
+```powershell
+cmd /c npm run dev
 ```
 
 ### Scripts disponibles
@@ -98,15 +101,17 @@ src/
 └── index.css                      # Estilos globales
 
 scripts/                           # Scripts auxiliares
-├── generate_payload.js
-├── generate_certificate.js
-├── analyze_generator.js
+├── generate_payload.js            # Genera payload base64 (comprobante)
+├── generate_certificate.js        # Genera payload base64 (certificado)
+├── analyze_generator.js           # Analiza/valida payloads
+├── cleanup_unused.ps1             # Limpia archivos sueltos obsoletos en la raíz
 └── README.md
 
 samples/                           # Ejemplos de payloads (JSON/base64)
 ├── simple_payload.json
 ├── test_payload.json
-└── temp_payload.json
+├── temp_payload.json
+└── clean_payload.json
 
 docs/                              # Documentación del proyecto
 └── WebServices_Coursera_Especificaciones.md
@@ -118,7 +123,7 @@ docs/                              # Documentación del proyecto
 
 La aplicación espera URLs con el siguiente formato:
 
-```
+```text
 https://trinity-bytes.github.io/WebServices-for-CourseraClone/verify/data?payload=[base64-encoded-json]
 ```
 
@@ -167,14 +172,14 @@ std::string generateReceiptURL(const ComprobanteDePago& comprobante) {
 - [x] Página principal informativa
 - [x] Parsing de datos desde URL
 - [x] Visualización de comprobantes de pago
-- [x] Generación y descarga de PDFs
+- [x] Generación y descarga de PDFs (comprobantes y certificados)
 - [x] Diseño mobile-first responsivo
 - [x] Manejo de errores
 - [x] Deploy automático en GitHub Pages
+- [x] Soporte completo para certificados (visualización y PDF)
 
 ### 🔄 Por Implementar (Fase 2)
 
-- [ ] Soporte para certificados
 - [ ] PWA (Progressive Web App)
 - [ ] QR Scanner integrado
 - [ ] Dark mode
@@ -200,15 +205,3 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
-
-## 📞 Contacto
-
-- **Proyecto**: [WebServices-for-CourseraClone](https://github.com/trinity-bytes/WebServices-for-CourseraClone)
-- **Demo**: [trinity-bytes.github.io/WebServices-for-CourseraClone](https://trinity-bytes.github.io/WebServices-for-CourseraClone/)
-
----
-
-**Hecho con ❤️ para CourseraClone Academy**  
-Servicios para la app courseraclone
-
-<!-- GitHub Pages deployment enabled -->

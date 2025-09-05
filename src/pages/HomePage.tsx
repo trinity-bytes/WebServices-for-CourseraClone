@@ -155,16 +155,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
-            <p>
-              <strong>Especificaciones técnicas:</strong>
-            </p>
-            <p className="mt-1">
-              ✅ Formato estándar definitivo con parámetro 'd'
-            </p>
-            <p>✅ Compatible con nombres completos (sin truncar)</p>
-            <p>✅ Empresa CourseraClone Academy automática</p>
-            <p>✅ Soporte completo para caracteres especiales (ñ, tildes)</p>
-            <p>✅ Routing corregido para GitHub Pages</p>
+            {/* Sección de especificaciones técnicas eliminada por solicitud */}
           </div>
         </div>
       </main>
@@ -172,12 +163,31 @@ export const HomePage: React.FC = () => {
       {/* Footer */}
       <footer className="bg-gray-100 border-t border-gray-200 mt-16">
         <div className="container mx-auto px-4 py-6 text-center text-gray-600">
-          <p>
-            &copy; 2024 CourseraClone Academy. Todos los derechos reservados.
+          <p className="font-medium text-gray-700">
+            &copy; {new Date().getFullYear()} CourseraClone Academy
           </p>
           <p className="text-sm mt-2">
             Verificador de documentos académicos seguro y confiable.
           </p>
+          <div className="mt-3 text-sm flex items-center justify-center gap-3">
+            <a
+              href="https://github.com/trinity-bytes/WebServices-for-CourseraClone"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-coursera-blue hover:underline"
+            >
+              Repositorio
+            </a>
+            <span className="text-gray-300">•</span>
+            <a
+              href="https://trinity-bytes.github.io/WebServices-for-CourseraClone/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-coursera-blue hover:underline"
+            >
+              Demo
+            </a>
+          </div>
         </div>
       </footer>
     </div>
